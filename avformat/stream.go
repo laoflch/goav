@@ -7,7 +7,7 @@ package avformat
 //#include <libavformat/avformat.h>
 import "C"
 import (
-	"github.com/giorgisio/goav/avcodec"
+	"github.com/laoflch/goav/avcodec"
 )
 
 //Rational av_stream_get_r_frame_rate (const Stream *s)
@@ -44,4 +44,40 @@ func (s *Stream) AvStreamGetParser() *CodecParserContext {
 //Returns the pts of the last muxed packet + its duration.
 func (s *Stream) AvStreamGetEndPts() int64 {
 	return int64(C.av_stream_get_end_pts((*C.struct_AVStream)(s)))
+}
+
+func (s *Stream) SetTimeBase(r avcodec.Rational) {
+	rat := C.struct_AVRational{
+		num: C.int(r.Num()),
+		den: C.int(r.Den()),
+	}
+	s.time_base = rat
+	//	s.time_base.num = C.int(time_base.num)
+	//	s.time_base.den = C.int(time_base.den)
+}
+func (s *Stream) SetRFrameRate(r avcodec.Rational) {
+	rat := C.struct_AVRational{
+		num: C.int(r.Num()),
+		den: C.int(r.Den()),
+	}
+	s.r_frame_rate = rat
+	//	s.time_base.num = C.int(time_base.num)
+	//	s.time_base.den = C.int(time_base.den)
+}
+
+func (s *Stream) SetAvgFrameRate(r avcodec.Rational) {
+	rat := C.struct_AVRational{
+		num: C.int(r.Num()),
+		den: C.int(r.Den()),
+	}
+	s.avg_frame_rate = rat
+	//	s.time_base.num = C.int(time_base.num)
+	//	s.time_base.den = C.int(time_base.den)
+}
+func (s *Stream) SetId(id int) {
+	s.id = C.int(id)
+}
+
+func (s *Stream) GetId() int {
+	return int(s.id)
 }

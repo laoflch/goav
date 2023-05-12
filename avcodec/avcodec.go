@@ -57,27 +57,31 @@ type (
 	AvSampleFormat                C.enum_AVSampleFormat
 )
 
-func (cp *AvCodecParameters) AvCodecGetId() CodecId {
+const (
+	AV_CODE_FLAG_GLOBAL_HEADER = (1 << 2)
+)
+
+func (cp *AvCodecParameters) CodecId() CodecId {
 	return *((*CodecId)(unsafe.Pointer(&cp.codec_id)))
 }
 
-func (cp *AvCodecParameters) AvCodecGetType() MediaType {
+func (cp *AvCodecParameters) CodecType() MediaType {
 	return *((*MediaType)(unsafe.Pointer(&cp.codec_type)))
 }
 
-func (cp *AvCodecParameters) AvCodecGetWidth() int {
+func (cp *AvCodecParameters) Width() int {
 	return (int)(*((*int32)(unsafe.Pointer(&cp.width))))
 }
 
-func (cp *AvCodecParameters) AvCodecGetHeight() int {
+func (cp *AvCodecParameters) Height() int {
 	return (int)(*((*int32)(unsafe.Pointer(&cp.height))))
 }
 
-func (cp *AvCodecParameters) AvCodecGetChannels() int {
+func (cp *AvCodecParameters) Channels() int {
 	return *((*int)(unsafe.Pointer(&cp.channels)))
 }
 
-func (cp *AvCodecParameters) AvCodecGetSampleRate() int {
+func (cp *AvCodecParameters) SampleRate() int {
 	return *((*int)(unsafe.Pointer(&cp.sample_rate)))
 }
 
@@ -104,7 +108,9 @@ func (c *Codec) AvGetProfileName(p int) string {
 func (c *Codec) AvcodecAllocContext3() *Context {
 	return (*Context)(C.avcodec_alloc_context3((*C.struct_AVCodec)(c)))
 }
-
+func NewAvcodecAllocContext3() *Context {
+	return (*Context)(C.avcodec_alloc_context3(nil))
+}
 func (c *Codec) AvCodecIsEncoder() int {
 	return int(C.av_codec_is_encoder((*C.struct_AVCodec)(c)))
 }
@@ -279,5 +285,41 @@ func AvcodecDescriptorGetByName(n string) *Descriptor {
 }
 
 func (f *Frame) Pts() int64 {
-	return int64(f.pts)
+	return int64(C.int64_t(f.pts))
+}
+
+func (f *Frame) Width() int {
+	return int(f.width)
+}
+func (f *Frame) Height() int {
+	return int(f.height)
+}
+
+func (f *Frame) Format() int {
+	return int(f.format)
+}
+
+func (f *Frame) PktDuration() int64 {
+	return int64(f.pkt_duration)
+}
+
+func (f *Frame) SampleAspectRatio() Rational {
+
+	return (Rational)(f.sample_aspect_ratio)
+
+}
+func AvFrameAlloc() *Frame {
+	return (*Frame)(unsafe.Pointer(C.av_frame_alloc()))
+}
+func AvFrameFree(f *Frame) {
+	C.av_frame_free((**C.struct_AVFrame)(unsafe.Pointer(&f)))
+}
+
+func AvCodecParametersCopy(dist_par *AvCodecParameters, ori_par *AvCodecParameters) int {
+
+	return int(C.avcodec_parameters_copy((*C.struct_AVCodecParameters)(dist_par), (*C.struct_AVCodecParameters)(ori_par)))
+
+}
+func (codecpar *AvCodecParameters) SetCodecTag(tag uint) {
+	codecpar.codec_tag = C.uint(tag)
 }

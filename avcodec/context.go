@@ -172,6 +172,14 @@ func (ctxt *Context) SetTimebase(num1 int, den1 int) {
 	ctxt.time_base.den = C.int(den1)
 }
 
+func (ctxt *Context) SetCodecTag(tag uint) {
+	ctxt.codec_tag = C.uint(tag)
+}
+
+func (ctxt *Context) SetFlags(flags int) {
+	ctxt.flags = C.int(flags)
+}
+
 func (ctxt *Context) SetEncodeParams2(width int, height int, pxlFmt PixelFormat, hasBframes bool, gopSize int) {
 	ctxt.width = C.int(width)
 	ctxt.height = C.int(height)
@@ -197,7 +205,27 @@ func (ctxt *Context) SetEncodeParams(width int, height int, pxlFmt PixelFormat) 
 func (ctxt *Context) AvcodecSendPacket(packet *Packet) int {
 	return (int)(C.avcodec_send_packet((*C.struct_AVCodecContext)(ctxt), (*C.struct_AVPacket)(packet)))
 }
+func (ctxt *Context) AvcodecReceivePacket(packet *Packet) int {
+	return (int)(C.avcodec_receive_packet((*C.struct_AVCodecContext)(ctxt), (*C.struct_AVPacket)(packet)))
+}
 
+func (ctxt *Context) AvcodecSendFrame(frame *Frame) int {
+	return (int)(C.avcodec_send_frame((*C.struct_AVCodecContext)(ctxt), (*C.struct_AVFrame)(frame)))
+}
 func (ctxt *Context) AvcodecReceiveFrame(frame *Frame) int {
 	return (int)(C.avcodec_receive_frame((*C.struct_AVCodecContext)(ctxt), (*C.struct_AVFrame)(frame)))
+}
+
+func (ctxt *Context) AvcodecParametersToContext(par *AvCodecParameters) int {
+	return (int)(C.avcodec_parameters_to_context((*C.struct_AVCodecContext)(ctxt), (*C.struct_AVCodecParameters)(par)))
+
+}
+
+func (ctxt *Context) AvcodecParametersFromContext(par *AvCodecParameters) int {
+	return (int)(C.avcodec_parameters_from_context((*C.struct_AVCodecParameters)(par), (*C.struct_AVCodecContext)(ctxt)))
+
+}
+
+func (ctxt *Context) SetPixFmt(pix_fmt PixelFormat) {
+	ctxt.pix_fmt = C.enum_AVPixelFormat(pix_fmt)
 }

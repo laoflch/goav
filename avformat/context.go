@@ -10,8 +10,8 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/giorgisio/goav/avcodec"
-	"github.com/giorgisio/goav/avutil"
+	"github.com/laoflch/goav/avcodec"
+	"github.com/laoflch/goav/avutil"
 )
 
 const (
@@ -108,6 +108,10 @@ func AvFindBestStream(ic *Context, t MediaType, ws, rs int, c **AvCodec, f int) 
 func (s *Context) AvReadFrame(pkt *avcodec.Packet) int {
 	return int(C.av_read_frame((*C.struct_AVFormatContext)(unsafe.Pointer(s)), toCPacket(pkt)))
 }
+
+//func (s *Context) AvReadFramePointer(pkt *unsafe.Pointer) int {
+//	return int(C.av_read_frame((*C.struct_AVFormatContext)(unsafe.Pointer(s)), (*C.struct_AVPacket)(pkt)))
+//}
 
 //Seek to the keyframe at timestamp.
 func (s *Context) AvSeekFrame(st int, t int64, f int) int {
@@ -224,6 +228,23 @@ func (s *Context) AvformatNewStream2(c *AvCodec) *Stream {
 	stream.time_base.num = 1
 	stream.time_base.num = 25
 	return stream
+}
+
+func (s *Context) PrivData() *interface{} {
+
+	return (*interface{})(s.priv_data)
+
+}
+
+func (s *Context) GetOFormat() *OutputFormat {
+
+	return (*OutputFormat)(s.oformat)
+
+}
+
+func (s *Context) SetMaxInterleaveDelta(micsecond int64) {
+	s.max_interleave_delta = C.long(micsecond)
+
 }
 
 // //av_format_control_message av_format_get_control_message_cb (const Context *s)

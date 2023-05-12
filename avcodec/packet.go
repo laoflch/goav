@@ -121,3 +121,9 @@ func (p *Packet) AvPacketCopyProps(s *Packet) int {
 func (p *Packet) AvPacketRescaleTs(r, r2 Rational) {
 	C.av_packet_rescale_ts((*C.struct_AVPacket)(p), (C.struct_AVRational)(r), (C.struct_AVRational)(r2))
 }
+
+func (p *Packet) SetPos(pos int64) {
+
+	p.pos = C.int64_t(pos)
+
+}

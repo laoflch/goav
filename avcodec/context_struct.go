@@ -546,3 +546,6 @@ func (ctxt *Context) SkipIdct() AvDiscard {
 func (ctxt *Context) SkipLoopFilter() AvDiscard {
 	return (AvDiscard)(ctxt.skip_loop_filter)
 }
+func (ctxt *Context) TimeBase() Rational {
+	return (Rational)(ctxt.time_base)
+}

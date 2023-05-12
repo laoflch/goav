@@ -154,6 +154,14 @@ func SetPicture(f *Frame, img *image.YCbCr) {
 	// d[1] = (*uint8)(unsafe.Pointer(&img.Cb[0]))
 }
 
+func SetPictureNRGBA(f *Frame, img *image.NRGBA) {
+	d := Data(f)
+	// l := Linesize(f)
+	// FIXME: Save the original pointers somewhere, this is a memory leak
+	d[0] = (*uint8)(unsafe.Pointer(&img.Pix[0]))
+	// d[1] = (*uint8)(unsafe.Pointer(&img.Cb[0]))
+}
+
 func GetPictureRGB(f *Frame) (img *image.RGBA, err error) {
 	w := int(f.linesize[0])
 	h := int(f.height)
@@ -193,6 +201,13 @@ func AvFrameGetInfo(f *Frame) (width int, height int, linesize [8]int32, data [8
 
 func GetBestEffortTimestamp(f *Frame) int64 {
 	return int64(f.best_effort_timestamp)
+}
+func (f *Frame) Pts() int64 {
+	return int64(f.pts)
+}
+
+func (f *Frame) SetPts(pts int64) {
+	f.pts = C.int64_t(pts)
 }
 
 // //static int get_video_buffer (Frame *frame, int align)

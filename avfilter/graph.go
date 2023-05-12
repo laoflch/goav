@@ -6,6 +6,7 @@ package avfilter
 /*
 	#cgo pkg-config: libavfilter
 	#include <libavfilter/avfilter.h>
+  #include <libavfilter/buffersrc.h>
 */
 import "C"
 import (
@@ -17,6 +18,10 @@ func AvfilterGraphAlloc() *Graph {
 	return (*Graph)(C.avfilter_graph_alloc())
 }
 
+/*func PushFrame(graph *Graph) int {
+	return int(C.push_frame((*C.struct_AVFilterGraph)(unsafe.Pointer(graph))))
+}
+*/
 //Create a new filter instance in a filter graph.
 func (g *Graph) AvfilterGraphAllocFilter(f *Filter, n string) *Context {
 	return (*Context)(C.avfilter_graph_alloc_filter((*C.struct_AVFilterGraph)(g), (*C.struct_AVFilter)(f), C.CString(n)))
@@ -53,7 +58,7 @@ func (g *Graph) AvfilterGraphParsePtr(f string, i, o **Input, l int) int {
 }
 
 //Add a graph described by a string to a graph.
-func (g *Graph) AvfilterGraphParse2(f string, i, o **Input) int {
+func (g *Graph) AvfilterGraphParse2(f string, i, o **InOut) int {
 	return int(C.avfilter_graph_parse2((*C.struct_AVFilterGraph)(g), C.CString(f), (**C.struct_AVFilterInOut)(unsafe.Pointer(i)), (**C.struct_AVFilterInOut)(unsafe.Pointer(o))))
 }
 

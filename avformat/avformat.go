@@ -21,8 +21,8 @@ import "C"
 import (
 	"unsafe"
 
-	"github.com/giorgisio/goav/avcodec"
-	"github.com/giorgisio/goav/avutil"
+	"github.com/laoflch/goav/avcodec"
+	"github.com/laoflch/goav/avutil"
 )
 
 type (
@@ -69,7 +69,9 @@ func (ctxt *AvIOContext) AvAppendPacket(pkt *avcodec.Packet, s int) int {
 func (ctxt *AvIOContext) Close() error {
 	return avutil.ErrorFromCode(int(C.avio_close((*C.AVIOContext)(unsafe.Pointer(ctxt)))))
 }
-
+func (ctxt *AvIOContext) CloseP() error {
+	return avutil.ErrorFromCode(int(C.avio_closep((**C.AVIOContext)(unsafe.Pointer(&ctxt)))))
+}
 func (f *InputFormat) AvRegisterInputFormat() {
 	C.av_register_input_format((*C.struct_AVInputFormat)(f))
 }
@@ -367,4 +369,10 @@ func AvIOOpen(url string, flags int) (res *AvIOContext, err error) {
 	err = avutil.ErrorFromCode(int(C.avio_open((**C.AVIOContext)(unsafe.Pointer(&res)), urlStr, C.int(flags))))
 
 	return
+}
+
+func (of *OutputFormat) Flags() int {
+
+	return int(C.int(of.flags))
+
 }
