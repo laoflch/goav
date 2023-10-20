@@ -24,7 +24,7 @@ func main() {
 	//logo_ctx2 := new(avfilter.Context)
 	//println((*logo_ctx2).name)
 	//println(*logo_ctx)
-	logoImageFile, err := os.Open("/home/laoflch//Documents/laoflch-mc-log22.png")
+	logoImageFile, err := os.Open("/workspace/ffmpeg/FFmpeg/doc/examples/laoflch-mc-log.png")
 	//logoImageFile, err := os.Open("/workspace/go/src/github.com/laoflch/goav/new_iamge.png")
 
 	if err != nil {
@@ -90,8 +90,9 @@ func main() {
 			//output_w = nil
 
 		}()
-
-		sret := avlaoflch.PushVideo2RtspSubtitleLogo("/workspace/ffmpeg/c-ffmpeg/Se7en.1995.REMASTERED.1080p.BluRay.x264-SADPANDA.mkv", "/workspace/ffmpeg/c-ffmpeg/Se7en.1995.REMASTERED.1080p.BluRay.x264-SADPANDA.zh.ass", &frame, "rtsp://127.0.0.1:554/test", true, true, uint64(480), uint64(480*6), uint64(480*3))
+		info := avlaoflch.VideoHandleProcessInfoAlloc()
+		//sret := avlaoflch.PushVideo2RtspSubtitleLogo("/workspace/ffmpeg/c-ffmpeg/Se7en.1995.REMASTERED.1080p.BluRay.x264-SADPANDA.mkv", 0, 1, "/workspace/ffmpeg/c-ffmpeg/Se7en.1995.REMASTERED.1080p.BluRay.x264-SADPANDA.zh.ass", &frame, "rtsp://127.0.0.1:554/test", true, true, uint64(480), uint64(480*6), uint64(480*3), &info)
+		sret := avlaoflch.PushVideo2RtspSubtitleLogo("http://192.168.71.247:8200/MediaItems/22167.mkv", 0, 1, "", &frame, "rtsp://127.0.0.1:554/test", true, true, uint64(480), uint64(480*6), uint64(480*3), &info)
 
 		//	LOG.Warningln("do handle fail:", err.Error())
 
