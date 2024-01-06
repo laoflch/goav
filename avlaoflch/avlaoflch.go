@@ -83,6 +83,20 @@ func (info *TaskHandleProcessInfo) SetVideoSize(w int, h int) {
 
 }
 
+//设置外挂字幕时间轴的偏移量，单位毫秒(ms)
+func (info *TaskHandleProcessInfo) SetSubtitleTimeOffset(offset int64) {
+
+	info.control.subtitle_time_offset = (C.int64_t)(offset)
+
+}
+
+//设置外挂字幕的字符编码格式
+func (info *TaskHandleProcessInfo) SetSubtitleCharenc(charenc string) {
+
+	info.control.subtitle_charenc = (C.CString)(charenc)
+
+}
+
 func (info *TaskHandleProcessInfo) TaskCancel() {
 
 	//return uint64((*info).total_duration)
