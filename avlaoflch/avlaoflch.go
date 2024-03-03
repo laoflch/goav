@@ -82,6 +82,14 @@ func (info *TaskHandleProcessInfo) SetVideoSize(w int, h int) {
 	info.height = (C.int)(h)
 
 }
+func (info *TaskHandleProcessInfo) SeekSeconds(s int64) {
+
+	//return uint64((*info).total_duration)
+
+	info.control.seek_time = (C.int64_t)(s)
+	//info.height = (C.int)(h)
+
+}
 
 //设置外挂字幕时间轴的偏移量，单位毫秒(ms)
 func (info *TaskHandleProcessInfo) SetSubtitleTimeOffset(offset int64) {
@@ -103,5 +111,19 @@ func (info *TaskHandleProcessInfo) TaskCancel() {
 
 	info.control.task_cancel = (C.bool)(true)
 	//info.height = (C.int)(h)
+
+}
+func (info *TaskHandleProcessInfo) TaskPause(pause bool) {
+
+	//return uint64((*info).total_duration)
+
+	info.control.task_pause = (C.bool)(pause)
+	//info.height = (C.int)(h)
+
+}
+
+func (info *TaskHandleProcessInfo) GetTaskPause() bool {
+
+	return bool(C.bool(info.control.task_pause))
 
 }
