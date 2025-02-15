@@ -7,6 +7,7 @@ package avlaoflch
 //#include <string.h>
 //#include <complex_filter.h>
 //#include <push_stream.h>
+//#include <push_stream_cuda.h>
 //#include <libavfilter/avfilter.h>
 import "C"
 import (
@@ -45,6 +46,16 @@ func Push2rtspSubLogo(VideoFilePath string, VideoIndex int, AudioIndex int, Subt
 	//	return int(C.push_video_to_rtsp_subtitle_logo(C.CString(VideoFilePath), C.int(VideoIndex), C.int(AudioIndex), unsafe.Pointer, (**C.struct_AVFrame)(unsafe.Pointer(LogoFrame)), C.CString(RtspPushPath), C.bool(if_hw), C.bool(if_logo_fade), C.uint64_t(duration_frames), C.uint64_t(interval_frames), C.uint64_t(present_frames), (**C.struct_VideoHandleProcessInfo)(unsafe.Pointer(video_Handle_process_info))))
 	//} else {
 	return int(C.push2rtsp_sub_logo(C.CString(VideoFilePath), C.int(VideoIndex), C.int(AudioIndex), C.int(SubtitleIndex), C.CString(SubtitleFilePath), (**C.struct_AVFrame)(unsafe.Pointer(LogoFrame)), C.CString(RtspPushPath), C.bool(if_hw), C.bool(if_logo_fade), C.uint64_t(duration_frames), C.uint64_t(interval_frames), C.uint64_t(present_frames), (*C.struct_TaskHandleProcessInfo)(unsafe.Pointer(task_Handle_process_info))))
+
+	//}
+}
+func Push2rtspSubLogoCUDA(VideoFilePath string, VideoIndex int, AudioIndex int, SubtitleIndex int, SubtitleFilePath string, LogoFrame **avfilter.Frame, RtspPushPath string, if_hw bool, if_logo_fade bool, duration_frames uint64, interval_frames uint64, present_frames uint64, task_Handle_process_info *TaskHandleProcessInfo) int {
+	//return int(C.push_video_to_rtsp_subtitle_logo(C.CString(VideoFilePath), C.CString(SubtitleFilePath), C.CString(LogoFilePath), C.CString(RtspPushPath), C.bool(if_hw)))
+
+	//if SubtitleFilePath == "" {
+	//	return int(C.push_video_to_rtsp_subtitle_logo(C.CString(VideoFilePath), C.int(VideoIndex), C.int(AudioIndex), unsafe.Pointer, (**C.struct_AVFrame)(unsafe.Pointer(LogoFrame)), C.CString(RtspPushPath), C.bool(if_hw), C.bool(if_logo_fade), C.uint64_t(duration_frames), C.uint64_t(interval_frames), C.uint64_t(present_frames), (**C.struct_VideoHandleProcessInfo)(unsafe.Pointer(video_Handle_process_info))))
+	//} else {
+	return int(C.push2rtsp_sub_logo_cuda(C.CString(VideoFilePath), C.int(VideoIndex), C.int(AudioIndex), C.int(SubtitleIndex), C.CString(SubtitleFilePath), (**C.struct_AVFrame)(unsafe.Pointer(LogoFrame)), C.CString(RtspPushPath), C.bool(if_hw), C.bool(if_logo_fade), C.uint64_t(duration_frames), C.uint64_t(interval_frames), C.uint64_t(present_frames), (*C.struct_TaskHandleProcessInfo)(unsafe.Pointer(task_Handle_process_info))))
 
 	//}
 }
@@ -125,5 +136,67 @@ func (info *TaskHandleProcessInfo) TaskPause(pause bool) {
 func (info *TaskHandleProcessInfo) GetTaskPause() bool {
 
 	return bool(C.bool(info.control.task_pause))
+
+}
+
+func (info *TaskHandleProcessInfo) SetAudioEncodecQ(q_min int, q_max int) {
+
+	info.encodec_para.aq_min = (C.int)(q_min)
+	info.encodec_para.aq_max = (C.int)(q_max)
+
+}
+
+func (info *TaskHandleProcessInfo) SetVideoEncodecQ(q_min int, q_max int) {
+
+	info.encodec_para.vq_min = (C.int)(q_min)
+	info.encodec_para.vq_max = (C.int)(q_max)
+
+}
+
+func (info *TaskHandleProcessInfo) SetVideoEncodecGopSize(v_gop_size int) {
+
+	info.encodec_para.v_gop_size = (C.int)(v_gop_size)
+
+}
+
+func (info *TaskHandleProcessInfo) SetVideoEncodecMaxBFrames(v_max_b_frames int) {
+
+	info.encodec_para.v_max_b_frames = (C.int)(v_max_b_frames)
+
+}
+
+func (info *TaskHandleProcessInfo) SetVideoEncodecPreset(preset string) {
+
+	info.encodec_para.v_preset = (C.CString)(preset)
+
+}
+
+func (info *TaskHandleProcessInfo) SetRtspTransport(transport string) {
+
+	info.push_rtsp_para.rtsp_transport = (C.CString)(transport)
+
+}
+
+func (info *TaskHandleProcessInfo) SetRtspBufferSize(buffer_size string) {
+
+	info.push_rtsp_para.buffer_size = (C.CString)(buffer_size)
+
+}
+
+func (info *TaskHandleProcessInfo) SetRtspMaxDelay(max_delay string) {
+
+	info.push_rtsp_para.max_delay = (C.CString)(max_delay)
+
+}
+
+func (info *TaskHandleProcessInfo) SetRtspTimeout(timeout string) {
+
+	info.push_rtsp_para.timeout = (C.CString)(timeout)
+
+}
+
+func (info *TaskHandleProcessInfo) SetRtspSTimeout(stimeout string) {
+
+	info.push_rtsp_para.stimeout = (C.CString)(stimeout)
 
 }

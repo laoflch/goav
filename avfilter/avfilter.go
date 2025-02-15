@@ -122,13 +122,14 @@ func (frame *Frame) SetFrameSize(w int, h int) {
 
 }
 
-func SetPictureNRGBA(f *Frame, img *image.NRGBA) {
+func SetPictureNRGBA(f **Frame, img *image.NRGBA) {
 	//d := Data(f)
 	// l := Linesize(f)
 	// FIXME: Save the original pointers somewhere, this is a memory leak
 	//d[0] = (*uint8)(unsafe.Pointer(&img.Pix[0]))
 
-	C.av_image_fill_arrays(&(f.data[0]), &(f.linesize[0]), (*C.uchar)(&img.Pix[0]), int32(f.format), f.width, f.height, 1)
+	C.av_image_fill_arrays(&((*f).data[0]), &((*f).linesize[0]), (*C.uchar)(&img.Pix[0]), int32((*f).format), (*f).width, (*f).height, 1)
+	//fmt.Printf("logo_image len: %d %d \n", len(img.Pix), ret)
 	// d[1] = (*uint8)(unsafe.Pointer(&img.Cb[0]))
 }
 func SetPictureNRGBA64(f *Frame, img *image.NRGBA64) {
